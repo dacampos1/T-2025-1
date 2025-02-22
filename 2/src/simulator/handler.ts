@@ -4,7 +4,7 @@ import axios from 'axios';
 
 
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2) => {
-  const URL = process.env.LAMBDA_URL as string;
+  const URL = `${process.env.LAMBDA_URL}/api/bulk-create`; ;
   try {
     const BASE_INDEX = event.body ? JSON.parse(event.body).currentIdNumber : 0;
     const payloads = getRandomPayloads(BASE_INDEX);

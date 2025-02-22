@@ -17,7 +17,7 @@ provider:
 
 custom:
   prefix: ${self:service}-${self:provider.stage}
-  lambdaUrl: localhost:3000/api
+  lambdaUrl: https://0inh03c502.execute-api.us-west-1.amazonaws.com
 
 functions:
   GetAll:
@@ -25,7 +25,7 @@ functions:
     role: FunctionRole
     events:
       - httpApi:
-          path: /api
+          path: /api/get-all
           method: GET
 
   BulkCreate:
@@ -33,7 +33,7 @@ functions:
     role: FunctionRole
     events:
       - httpApi:
-          path: /api
+          path: /api/bulk-create
           method: POST
 
   Simulator:
