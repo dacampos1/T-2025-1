@@ -21,7 +21,7 @@ custom:
 
 functions:
   GetAll:
-    handler: ./src/get-all/handler.handler
+    handler: ./src/functions/get-all/handler.handler
     role: FunctionRole
     events:
       - httpApi:
@@ -29,7 +29,7 @@ functions:
           method: GET
 
   BulkCreate:
-    handler: ./src/bulk-create/handler.handler
+    handler: ./src/functions/bulk-create/handler.handler
     role: FunctionRole
     events:
       - httpApi:
@@ -37,12 +37,22 @@ functions:
           method: POST
 
   Simulator:
-    handler: ./src/simulator/handler.handler
+    handler: ./src/functions/simulator/handler.handler
     role: FunctionRole
     events:
       - httpApi:
           path: /api/simulator
           method: POST
+    environment:
+      LAMBDA_URL: ${self:custom.lambdaUrl}
+
+  Clear:
+    handler: ./src/functions/clear/handler.handler
+    role: FunctionRole
+    events:
+      - httpApi:
+          path: /api/clear
+          method: DELETE
     environment:
       LAMBDA_URL: ${self:custom.lambdaUrl}
 

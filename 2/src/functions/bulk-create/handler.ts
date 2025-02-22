@@ -1,30 +1,33 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2 } from 'aws-lambda';
-import { Customer, getCustomers, putCustomers } from '../services/dynamo';
+import { Customer, getCustomers, putCustomers } from '../../services/dynamo';
 
 
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2) => {
   try {
     const customers = await getCustomers();
     const newCustomers: Customer[] = JSON.parse(event.body || '[]');
-    newCustomers.forEach((customer) => {
+    for (const customer of newCustomers) {
       if (!customer.firstName || !customer.lastName || !customer.age || customer.id === undefined) {
         return {
           statusCode: 400,
-          body: JSON.stringify({ message: `All fields must be supplied` }),
+          body: JSON.stringify({ message: `Customer with ID ${customer.id} is missing required fields` }),
         };
       }
 
       if (customer.age <= 18) {
         return {
           statusCode: 400,
-          body: JSON.stringify({ message: `Customer must be above 18 years old` }),
+          body: JSON.stringify({ message: `Customer with ID ${customer.id} must be above 18 years old` }),
         };
       }
+      const customerAlreadyExists = customers.find(
+        (existingCustomer) => existingCustomer.id === customer.id
+      );
 
-      if (customers.find((existingCustomer) => existingCustomer.id === customer.id)) {
+      if (customerAlreadyExists) {
         return {
           statusCode: 400,
-          body: JSON.stringify({ message: `ID has been used before` }),
+          body: JSON.stringify({ message: `ID ${customerAlreadyExists.id} has been used before` }),
         };
       }
 
@@ -37,7 +40,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
         index++;
       }
       customers.splice(index, 0, customer);
-    });
+    };
 
     await putCustomers(customers);
     return {
