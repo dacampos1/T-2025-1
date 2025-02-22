@@ -32,8 +32,10 @@ const getRandomPayloads = (currentIdNumber: number) => {
   const NAMES = ['Leia', "Sadie", "Jose", "Sara", "Frank", "Dewey", "Tomas", "Joel", "Lukas", "Carlos"];
   const LAST_NAMES = ["Liberty", "Ray", "Harrison", "Ronan", "Drew", "Powell", "Larsen", "Chan", "Anderson"];
   const randomNumberOfParallelRequests = Math.floor(Math.random() * 5) + 2;
+  
   const payloads = Array.from({ length: randomNumberOfParallelRequests }, (_, indexPayload) => {
-    const customers = Array.from({ length: 2 }, (_, indexCustomer) => ({
+    const randomNumberOfCustomers= Math.floor(Math.random() * 5) + 2;
+    const customers = Array.from({ length: randomNumberOfCustomers }, (_, indexCustomer) => ({
       firstName: NAMES[Math.floor(Math.random() * NAMES.length)],
       lastName: LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)],
       age: Math.floor(Math.random() * 80) + 10,
