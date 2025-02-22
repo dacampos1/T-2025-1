@@ -17,7 +17,7 @@ provider:
 
 custom:
   prefix: ${self:service}-${self:provider.stage}
-  lambdaUrl: https://0inh03c502.execute-api.us-west-1.amazonaws.com
+  lambdaUrl: https://nukxbbxp10.execute-api.us-west-1.amazonaws.com
 
 functions:
   GetAll:
