@@ -7,7 +7,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs18.x
-  region: eu-west-1
+  region: us-west-1
   stage: ${opt:stage}
   logRetentionInDays: 180
   versionFunctions: false
@@ -23,3 +23,4 @@ functions: ${file(./resources/functions.yml)}
 
 resources:
   - ${file(./resources/function-roles.yml)}
+  - ${file(./resources/dynamo.yml)}

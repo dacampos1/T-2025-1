@@ -1,5 +1,3 @@
-# CloudFormation generic syntax
-
 Resources:
   FunctionRole:
     Type: AWS::IAM::Role
@@ -19,5 +17,12 @@ Resources:
               Version: "2012-10-17"
               Statement:
                 - Effect: Allow
-                  Action: "sqs:*"
+                  Action: 
+                    - "sqs:*"
                   Resource: "*"
+                - Effect: Allow
+                  Action: 
+                    - "dynamodb:GetItem"
+                    - "dynamodb:PutItem"
+                  Resource: 
+                    - !GetAtt CustomersTable.Arn

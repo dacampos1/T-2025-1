@@ -1,10 +1,10 @@
 import type {
   Handler,
 } from "aws-lambda";
-import { customers } from "../bulk-create/handler";
+import { getCustomers } from "../services/dynamo";
 
 export const handler: Handler = async () => {
-
-  return customers;
+  
+  return getCustomers();
 
 };

@@ -1,16 +1,10 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2 } from 'aws-lambda';
+import { Customer, getCustomers, putCustomers } from '../services/dynamo';
 
-type Customer = {
-  firstName: string;
-  lastName: string;
-  age: number;
-  id: number;
-};
-
-export let customers: Customer[] = [];
 
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2) => {
   try {
+    const customers = await getCustomers();
     const newCustomers: Customer[] = JSON.parse(event.body || '[]');
     newCustomers.forEach((customer) => {
       if (!customer.firstName || !customer.lastName || !customer.age || customer.id === undefined) {
@@ -44,6 +38,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
       }
       customers.splice(index, 0, customer);
     });
+
+    await putCustomers(customers);
     return {
       statusCode: 200,
       body: JSON.stringify({ message: `Customers added successfully`, customers }),
