@@ -3,14 +3,14 @@ import axios from 'axios';
 
 
 
-let url = "http://localhost:3000/api";
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2) => {
+  const URL = process.env.LAMBDA_URL as string;
   try {
     const BASE_INDEX = event.body ? JSON.parse(event.body).currentIdNumber : 0;
     const payloads = getRandomPayloads(BASE_INDEX);
     
     const paralellRequests = payloads.map(async (payload) => {
-      const response = await axios.post(url, payload);
+      const response = await axios.post(URL, payload);
       return response;
     }
   );
