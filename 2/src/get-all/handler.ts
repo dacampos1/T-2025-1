@@ -1,13 +1,10 @@
 import type {
-  Context,
-  APIGatewayProxyStructuredResultV2,
-  APIGatewayProxyEventV2,
   Handler,
 } from "aws-lambda";
+import { customers } from "../bulk-create/handler";
 
-export const handler: Handler = async (
-  _event: APIGatewayProxyEventV2,
-  _context: Context,
-): Promise<APIGatewayProxyStructuredResultV2> => {
-  
+export const handler: Handler = async () => {
+
+  return customers;
+
 };

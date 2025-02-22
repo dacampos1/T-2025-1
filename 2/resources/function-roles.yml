@@ -18,6 +18,6 @@ Resources:
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
-                - Effect: Allow # allow EVERY action within SQS rights. dangerous!
+                - Effect: Allow
                   Action: "sqs:*"
-                  Resource: "*" # for every resource
+                  Resource: "*"
