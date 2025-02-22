@@ -18,7 +18,7 @@ export const getCustomers = async () => {
         }
       });
     const response = await client.send(command);
-    return JSON.stringify(response?.Item?.data?.S) as unknown as Customer[];
+    return JSON.parse(response?.Item?.data?.S || '[]') as unknown as Customer[];
 
 };
 
