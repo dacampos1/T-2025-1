@@ -18,3 +18,14 @@ BulkCreate:
         method: POST
   environment:
     CUSTOM_VAR: ${self:custom.customVariable1}
+
+
+Simulator:
+  handler: ./src/simulator/handler.handler
+  role: FunctionRole
+  events:
+    - httpApi:
+        path: /api/simulator
+        method: POST
+  environment:
+    CUSTOM_VAR: ${self:custom.customVariable1}
