@@ -4,7 +4,10 @@ import type {
 import { getCustomers } from "../services/dynamo";
 
 export const handler: Handler = async () => {
-  
-  return getCustomers();
+  const customers = await getCustomers();
 
+  return {
+    statusCode: 200,
+    body: customers,
+  };
 };

@@ -1,35 +1,34 @@
-import DynamoDB from "aws-sdk/clients/dynamodb";
+import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 
-const docClient = new DynamoDB.DocumentClient();
+const client = new DynamoDBClient({});
 
-const key = {
-    'id': '1',
-};
 
 export type Customer = {
-  firstName: string;
-  lastName: string;
-  age: number;
-  id: number;
+    firstName: string;
+    lastName: string;
+    age: number;
+    id: number;
 };
 
-
 export const getCustomers = async () => {
-    const params = {
-        TableName: 'customers',
-        Key: key
-    };
-    const response = await docClient.get(params).promise();
-    return response.Item?.data as Customer[] || [];
-}
+    const command = new GetItemCommand({
+        TableName: "customers",
+        Key: {
+            "id": { S: "1"},
+        }
+      });
+    const response = await client.send(command);
+    return JSON.stringify(response?.Item?.data?.S) as unknown as Customer[];
+
+};
 
 export const putCustomers = async (customers: Customer[]) => {
-    const params = {
-        TableName: 'customers',
+    const command = new PutItemCommand({
+        TableName: "customers",
         Item: {
-            'id': '1',
-            'data': customers
-        }
-    };
-    await docClient.put(params).promise();
-}
+            "id": { S: "1"},
+            "data": { S: JSON.stringify(customers)},
+        },
+    });
+    await client.send(command);
+};

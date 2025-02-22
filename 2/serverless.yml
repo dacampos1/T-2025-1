@@ -73,6 +73,7 @@ resources:
                   Action: 
                     - "dynamodb:GetItem"
                     - "dynamodb:PutItem"
+                    - "dynamodb:Query"
                   Resource: 
                     - !GetAtt CustomersTable.Arn
     CustomersTable:
