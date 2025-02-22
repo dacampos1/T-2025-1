@@ -1,0 +1,101 @@
+service: customers-api
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-west-1
+  stage: ${opt:stage}
+  logRetentionInDays: 180
+  versionFunctions: false
+  timeout: 30
+  environment:
+    STAGE: ${self:provider.stage}
+
+custom:
+  prefix: ${self:service}-${self:provider.stage}
+  lambdaUrl: https://0inh03c502.execute-api.us-west-1.amazonaws.com
+
+functions:
+  GetAll:
+    handler: ./src/functions/get-all/handler.handler
+    role: FunctionRole
+    events:
+      - httpApi:
+          path: /api/get-all
+          method: GET
+
+  BulkCreate:
+    handler: ./src/functions/bulk-create/handler.handler
+    role: FunctionRole
+    events:
+      - httpApi:
+          path: /api/bulk-create
+          method: POST
+
+  Simulator:
+    handler: ./src/functions/simulator/handler.handler
+    role: FunctionRole
+    events:
+      - httpApi:
+          path: /api/simulator
+          method: POST
+    environment:
+      LAMBDA_URL: ${self:custom.lambdaUrl}
+
+  Clear:
+    handler: ./src/functions/clear/handler.handler
+    role: FunctionRole
+    events:
+      - httpApi:
+          path: /api/clear
+          method: DELETE
+    environment:
+      LAMBDA_URL: ${self:custom.lambdaUrl}
+
+resources:
+  Resources:
+    FunctionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        Policies:
+          - PolicyName: ${self:custom.prefix}-FunctionRole-policy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: 
+                    - "sqs:*"
+                  Resource: "*"
+                - Effect: Allow
+                  Action: 
+                    - "dynamodb:GetItem"
+                    - "dynamodb:PutItem"
+                    - "dynamodb:Query"
+                  Resource: 
+                    - !GetAtt CustomersTable.Arn
+    CustomersTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: customers
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
