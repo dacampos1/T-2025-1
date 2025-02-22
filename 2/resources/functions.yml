@@ -1,0 +1,20 @@
+
+GetAll:
+  handler: ./src/get-all/handler.handler
+  role: FunctionRole
+  events:
+    - httpApi:
+        path: /api
+        method: GET
+  environment:
+    CUSTOM_VAR: ${self:custom.customVariable1}
+
+BulkCreate:
+  handler: ./src/bulk-create/handler.handler
+  role: FunctionRole
+  events:
+    - httpApi:
+        path: /api
+        method: POST
+  environment:
+    CUSTOM_VAR: ${self:custom.customVariable1}

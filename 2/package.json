@@ -1,0 +1,27 @@
+{
+  "name": "customers-api",
+  "private": true,
+  "version": "1.0.0",
+  "description": "customers-api",
+  "scripts": {
+    "invoke:Function1": "sls invoke local -f Function1 -s dev",
+    "start:api": "serverless offline -s dev",
+    "deploy:dev": "sls deploy -s dev",
+    "prepare": "husky install",
+    "build": "tsc --noemit"
+  },
+  "devDependencies": {
+    "@serverless/typescript": "^3.30.1",
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "esbuild": "^0.17.19",
+    "glob": "^10.3.3",
+    "serverless": "^3.34.0",
+    "serverless-esbuild": "^1.46.0",
+    "serverless-offline": "^12.0.4",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.6"
+  }
+}
