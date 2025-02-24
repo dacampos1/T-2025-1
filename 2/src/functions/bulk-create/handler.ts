@@ -31,14 +31,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
         };
       }
 
-      let index = 0;
-      while (
-        index < customers.length &&
-        (customers[index].lastName < customer.lastName ||
-          (customers[index].lastName === customer.lastName && customers[index].firstName < customer.firstName))
-      ) {
-        index++;
-      }
+      const index = binarySearch(customers, customer);
       customers.splice(index, 0, customer);
     };
 
@@ -54,3 +47,20 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
     };
   }
 };
+
+function binarySearch(customers: Customer[], customer: Customer) {
+  let left = 0;
+  let right = customers.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((right + left) / 2);
+    if (customers[mid].lastName < customer.lastName || 
+      (customers[mid].lastName === customer.lastName && customers[mid].firstName < customer.firstName)) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  
+  return left;
+}
