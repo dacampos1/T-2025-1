@@ -7,7 +7,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs18.x
-  region: us-west-1
+  region: us-east-1
   stage: ${opt:stage}
   logRetentionInDays: 180
   versionFunctions: false
@@ -17,7 +17,7 @@ provider:
 
 custom:
   prefix: ${self:service}-${self:provider.stage}
-  lambdaUrl: https://nukxbbxp10.execute-api.us-west-1.amazonaws.com
+  lambdaUrl: https://31op0pro8f.execute-api.us-east-1.amazonaws.com
 
 functions:
   GetAll:
