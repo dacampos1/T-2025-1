@@ -18,36 +18,36 @@ tsc 1/index.ts; node 1/index.js;
 
 ### Deployment
 
- ``
-npm install -g typescript
 ``
 serverless deploy -s prod
 ``
 
 ### API
 
-Create customers from giving array of customers
-``
- POST https://31op0pro8f.execute-api.us-east-1.amazonaws.com/api/bulk-create
-``
+- Create customers from giving array of customers
 
-Empty the array of customers
-``
-DELETE <https://31op0pro8f.execute-api.us-east-1.amazonaws.com/api/clear>
-``
+    ``
+    POST https://31op0pro8f.execute-api.us-east-1.amazonaws.com/api/bulk-create
+    ``
 
-Get all customers
+- Empty the array of customers
 
-``
-GET <https://31op0pro8f.execute-api.us-east-1.amazonaws.com/api/get-all>
-``
+    ``
+    DELETE <https://31op0pro8f.execute-api.us-east-1.amazonaws.com/api/clear>
+    ``
 
-Generate a random number of request to the bulk-create endpoint with random customers, returns the requests
+- Get all customers
+
+    ``
+    GET <https://31op0pro8f.execute-api.us-east-1.amazonaws.com/api/get-all>
+    ``
+
+- Generate a random number of request to the bulk-create endpoint with random customers, returns the requests
 Optional body param: currentIdNumber to specify the current id for the generated new customers
 
-``
-POST <https://31op0pro8f.execute-api.us-east-1.amazonaws.com/api/simulator>
-``
+    ``
+    POST <https://31op0pro8f.execute-api.us-east-1.amazonaws.com/api/simulator>
+    ``
 
 ### Notes
 
