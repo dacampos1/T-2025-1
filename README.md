@@ -54,3 +54,5 @@ Optional body param: currentIdNumber to specify the current id for the generated
 The server is responsible for maintaining the state of the array, as opposed to a database. This necessitates appropriate concurrency management to ensure that data isn't inadvertently overwritten.
 
 The endpoint produces events for an SQS queue, enabling the Lambda function to process each request asynchronously while simultaneously supporting parallel requests. Then the array is persisted in Dynamo to avoid losing data.
+
+This may cause a small delay in the update of the array.
