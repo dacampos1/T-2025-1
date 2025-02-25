@@ -12,7 +12,7 @@ export type Customer = {
 
 export const getCustomers = async () => {
     const command = new GetItemCommand({
-        TableName: "customers",
+        TableName: process.env.TABLE_NAME,
         Key: {
             "id": { S: "1"},
         }
@@ -24,7 +24,7 @@ export const getCustomers = async () => {
 
 export const putCustomers = async (customers: Customer[]) => {
     const command = new PutItemCommand({
-        TableName: "customers",
+        TableName: process.env.TABLE_NAME,
         Item: {
             "id": { S: "1"},
             "data": { S: JSON.stringify(customers)},

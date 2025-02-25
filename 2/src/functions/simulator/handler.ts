@@ -1,14 +1,5 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import axios from 'axios';
-import * as  axiosRetry from 'retry-axios';
-
-axios.defaults.raxConfig = {
-  retry: 5,
-  noResponseRetries: 2,
-  statusCodesToRetry: [ [503]],
-};
-
-axiosRetry.attach(axios);
 
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2) => {
   const URL = `${process.env.LAMBDA_URL}/api/bulk-create`; ;
@@ -21,26 +12,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
       return response;
     }
   );
-  const response = await Promise.allSettled(paralellRequests);
-  const payloadsAndResponses = payloads.map((payload, index) => {
-    if (response[index].status !== 'fulfilled') {
-      const responseRejected = response[index] as PromiseRejectedResult;
-      return {
-        status: 'rejected',
-        payload,
-        response: responseRejected.reason.message
-      };
-    }
-    const responseFulfilled = response[index] as PromiseFulfilledResult<any>;
-    return {
-      payload,
-      status: 'fulfilled',
-      response: responseFulfilled.value.data
-    };
-  });
+  await Promise.allSettled(paralellRequests);
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: `Requests generated successfully`, payloadsAndResponses }),
+    body: JSON.stringify({ message: `Requests generated successfully`, payloads }),
   };
 } catch (error) {
   return {

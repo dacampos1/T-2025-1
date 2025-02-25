@@ -17,28 +17,49 @@ provider:
 
 custom:
   prefix: ${self:service}-${self:provider.stage}
-  lambdaUrl: https://31op0pro8f.execute-api.us-east-1.amazonaws.com
+  tableName: ${self:custom.prefix}-customers-table
+  lambdaUrl: https://r7abtoek3c.execute-api.us-east-1.amazonaws.com
+  queueUrl: https://sqs.us-east-1.amazonaws.com/475637810843/customers-api-prod-bulk-create-queue
 
 functions:
   GetAll:
     handler: ./src/functions/get-all/handler.handler
     role: FunctionRole
+    name: ${self:custom.prefix}-get-all-fn
+    environment:
+      TABLE_NAME: ${self:custom.tableName}
     events:
       - httpApi:
           path: /api/get-all
           method: GET
 
+  BulkCreateProxy:
+    handler: ./src/functions/bulk-create-proxy/handler.handler
+    role: FunctionRole
+    name: ${self:custom.prefix}-bulk-create-proxy-fn
+    events:
+      - httpApi:
+            path: /api/bulk-create
+            method: POST
+    environment:
+      QUEUE_URL: ${self:custom.queueUrl}
+
   BulkCreate:
     handler: ./src/functions/bulk-create/handler.handler
     role: FunctionRole
+    name: ${self:custom.prefix}-bulk-create
+    reservedConcurrency: 1
+    environment:
+      TABLE_NAME: ${self:custom.tableName}
     events:
-      - httpApi:
-          path: /api/bulk-create
-          method: POST
-
+      - sqs: 
+          batchSize: 1
+          arn:
+            Fn::GetAtt: [BulkCreateQueue, Arn]
   Simulator:
     handler: ./src/functions/simulator/handler.handler
     role: FunctionRole
+    name: ${self:custom.prefix}-simulator-fn
     events:
       - httpApi:
           path: /api/simulator
@@ -49,12 +70,14 @@ functions:
   Clear:
     handler: ./src/functions/clear/handler.handler
     role: FunctionRole
+    name: ${self:custom.prefix}-clear-fn
+    environment:
+      TABLE_NAME: ${self:custom.tableName}
+      LAMBDA_URL: ${self:custom.lambdaUrl}
     events:
       - httpApi:
           path: /api/clear
           method: DELETE
-    environment:
-      LAMBDA_URL: ${self:custom.lambdaUrl}
 
 resources:
   Resources:
@@ -86,10 +109,18 @@ resources:
                     - "dynamodb:Query"
                   Resource: 
                     - !GetAtt CustomersTable.Arn
+                - Effect: Allow
+                  Action: 
+                    - "sqs:SendMessage"
+                    - "sqs:ReceiveMessage"
+                    - "sqs:DeleteMessage"
+                  Resource: 
+                    - !GetAtt BulkCreateQueue.Arn
     CustomersTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        TableName: customers
+        TableName: 
+          Fn::Sub: ${self:custom.prefix}-customers-table
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -99,3 +130,8 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    BulkCreateQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName:  
+          Fn::Sub: ${self:custom.prefix}-bulk-create-queue
